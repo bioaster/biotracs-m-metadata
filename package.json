@@ -1,0 +1,7 @@
+{
+	"name"			: "biotracs-m-metadata",
+    "description"    : "Biotracs application to manage sample metadata",
+	"dependencies"	: [
+		"biotracs-m"
+		]
+}
