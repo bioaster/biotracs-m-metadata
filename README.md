@@ -1,17 +1,15 @@
-# Biotracs-medata application
+# BioTracs Metadata application
 
-The biotracs-metadata application allow managing sample metadata and annotate experimental data for analysis
+The `biotracs-m-metadata` application provides MATLAB libraries to manage sample metadata and annotate experimental data for analysis.
 
-# Learn more about the biotracs project
+# Learn more about the BioTracs project
 
-To learn more about the biotracs project, please refers to https://github.com/bioaster/biotracs
+To learn more about the BioTracs project, please refers to https://github.com/bioaster/biotracs
 
 # Usage
 
-Please refer to the documentation at https://github.com/bioaster/biotracs
+Please refer to the documentation at https://bioaster.github.io/biotracs/documentation
 
 # License
 
-BIOASTER License
-
-BIOASTER License
+BIOASTER license https://github.com/bioaster/biotracs/blob/master/LICENSE
