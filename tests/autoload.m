@@ -156,13 +156,13 @@ function loadDep( iDep, iVerbose )
 
             %check if the module contains an 'externs' subdirectory
             externDir = fullfile(moduleDir, 'externs/matlab');
-            if isfolder( externDir )
+            if exist( externDir, 'dir' )
                 loadRecursive( externDir );
             end
 
             %check if the module contains an 'backcomp' subdirectory
             backcompDir = fullfile(moduleDir, 'backcomp');
-            if isfolder( backcompDir )
+            if exist( externDir, 'dir' )
                 loadBackcomp( backcompDir );
             end
         else
