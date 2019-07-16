@@ -28,7 +28,8 @@ function autoload( varargin )
     
     % load dependencies
     if ~isdeployed
-        depPaths = createDepPaths(p.Results.PkgPaths, p.Results.Dependencies);
+        [ depPaths, depVars ] = createDepPaths(p.Results.PkgPaths, p.Results.Dependencies);
+        
         if isempty(depPaths)
             if p.Results.Verbose
                 if isempty(p.Results.Dependencies)
@@ -52,7 +53,14 @@ function autoload( varargin )
     
     % Set environment variables
     biotracs.core.env.Env.depPaths(depPaths);
-    biotracs.core.env.Env.vars(p.Results.Variables);
+    
+    if ~isempty(p.Results.Variables)
+        f = fieldnames(p.Results.Variables);
+        for i=1:length(f)
+            depVars.(f{i}) = p.Results.Variables.(f{i});
+        end
+    end
+    biotracs.core.env.Env.vars( depVars );
 
     depNames = cell(size(depPaths));
     tokens = cell(size(depPaths));
@@ -80,22 +88,28 @@ function autoload( varargin )
     end    
 end
 
-function oDepPaths = createDepPaths( iRootPaths, iDeps, iExceptions )
+function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iExceptions, iDepVars )
     oDepPaths = {};
     foundDeps = {};
     if isempty(iDeps)
         return;
     end
 
-    if nargin == 2
+    if nargin <= 2
         iExceptions = {};
+    end
+    
+    if nargin <= 3
+        oDepVars = struct();
+    else
+        oDepVars = iDepVars;
     end
     
     isRelativeDir = ~cellfun(@isempty,  regexp(iRootPaths, '^\.', 'once'));
     if isRelativeDir
         error('The RootPaths must be absolutes paths');
     end
-
+        
     for i=1:length(iRootPaths)
         for j=1:length(iDeps)
             if any(ismember(foundDeps, iDeps{j}))
@@ -118,6 +132,13 @@ function oDepPaths = createDepPaths( iRootPaths, iDeps, iExceptions )
                         error('BIOTRACS:Autoload:InvalidPkgFile', 'An error occured while loading the pkg file ''package.json''. Please check.\n %s', exception.message)
                     end
                     
+                    if isfield(data, 'variables')
+                        f = fieldnames(data.variables);
+                        for kk=1:length(f)
+                            oDepVars.(f{kk}) = data.variables.(f{kk});
+                        end
+                    end
+                    
                     if isfield(data, 'dependencies')
                         subDeps = {};
                         for k=1:length(data.dependencies)
@@ -129,9 +150,11 @@ function oDepPaths = createDepPaths( iRootPaths, iDeps, iExceptions )
 
                         oDepPaths = [...
                             oDepPaths, ...
-                            createDepPaths( iRootPaths, subDeps, foundDeps ) ...
+                            createDepPaths( iRootPaths, subDeps, foundDeps, oDepVars ) ...
                             ]; %#ok<AGROW>
                     end
+
+                    
                 end
             end
         end
