@@ -50,7 +50,7 @@ function autoload( varargin )
             end
         end
     end
-    
+
     % Set environment variables
     biotracs.core.env.Env.depPaths(depPaths);
     
@@ -60,6 +60,7 @@ function autoload( varargin )
             depVars.(f{i}) = p.Results.Variables.(f{i});
         end
     end
+
     biotracs.core.env.Env.vars( depVars );
 
     depNames = cell(size(depPaths));
@@ -125,6 +126,7 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                 
                 %search 'package.json' file
                 appFile = fullfile(depPath, 'package.json');
+                
                 if exist(appFile, 'file') == 2
                     
                     try
@@ -134,9 +136,12 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                     end
                     
                     if isfield(data, 'variables')
-                        oDepVars = data.variables;
+                        f = fieldnames(data.variables);
+                        for kk=1:length(data.variables)
+                            oDepVars.(f{kk}) = data.variables.(f{kk});
+                        end
                     end
-                    
+
                     if isfield(data, 'dependencies')
                         subDeps = {};
                         for k=1:length(data.dependencies)
@@ -153,6 +158,7 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
                         
                         %concatenation of dependency variables                        
                         f = fieldnames(dVars);
+                        
                         for kk=1:length(f)
                             oDepVars.(f{kk}) = dVars.(f{kk});
                         end
@@ -162,7 +168,7 @@ function [ oDepPaths, oDepVars ] = createDepPaths( iRootPaths, iDeps, iException
             end
         end
     end
-           
+    
     oDepPaths = unique(oDepPaths);
 end
 
