@@ -23,6 +23,8 @@ classdef TableAnnotator < biotracs.core.mvc.model.Process
         
         % Constructor
         function this = TableAnnotator()
+            %#function biotracs.metadata.model.TableAnnotatorConfig biotracs.data.model.DataTable biotracs.data.model.DataTable biotracs.core.mvc.model.ResourceSet
+            
             this@biotracs.core.mvc.model.Process();            
             % enhance inputs specs
             this.addInputSpecs({...
